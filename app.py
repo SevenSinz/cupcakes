@@ -1,9 +1,6 @@
-from flask import Flask
-# , redirect, render_template
+from flask import Flask, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-
-from models import db, connect_db
-# from forms import 
+from models import db, connect_db, Cupcake
 
 app = Flask(__name__)
 
@@ -20,4 +17,17 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 
-@
+@app.route("/cupcakes")
+def display_cupcakes():
+    """ display all existing cupcakes"""
+    cupcakes = Cupcake.query.all()
+
+    serialized_cupcakes = [{
+        "flavor": cupcakes.flavor,
+        "size": cupcakes.size,
+        "rating": cupcakes.rating,
+        "image": cupcakes.image,
+    } for cupcake in cupcakes]
+
+    return jsonify(response=serialized_cupcakes)
+
