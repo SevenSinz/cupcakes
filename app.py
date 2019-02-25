@@ -37,7 +37,26 @@ def display_cupcakes():
 
 @app.route("/cupcakes", methods=["POST"])
 def create_cupcake():
-    """ create new cupcake"""
+    """ create new cupcake
+    
+    Sending the query inside the body of the post as:
+
+    { "flavor": "strawberry",
+    "size": "XXL",
+    "rating": 1,
+    "image": "cupcake4.com"}
+    
+    Expecting:
+    {
+        "response": {
+        "flavor": "strawberry",
+        "id": 2,
+        "image": "cupcake4.com",
+        "rating": 1.0,
+        "size": "XXL"
+        }
+    }
+    """
 
     flavor = request.json["flavor"]
     size = request.json["size"]
@@ -45,15 +64,15 @@ def create_cupcake():
     image = request.json["image"]
 
     new_cupcake = Cupcake(
-        flavor= flavor,
-        size= size,
-        rating= rating,
-        image= image)
+        flavor=flavor,
+        size=size,
+        rating=rating,
+        image=image)
 
     db.session.add(new_cupcake)
     db.session.commit()
 
-    serialized_new_cupcake= { 
+    serialized_new_cupcake = { 
         "id": new_cupcake.id,
         "flavor": new_cupcake.flavor,
         "size": new_cupcake.size,
@@ -62,3 +81,26 @@ def create_cupcake():
 
     return jsonify(response=serialized_new_cupcake)
 
+
+@app.route("/cupcakes/<int:cupcake_id>", methods=["GET", "PATCH"])
+def patch_cupcake(cupcake_id):
+    """ Handles cupcake patch for individual cupcake """
+
+    patched_cupcake = Cupcake.query.get(cupcake_id)
+
+    patched_cupcake.flavor = request.json["flavor"]
+    patched_cupcake.size = request.json["size"]
+    patched_cupcake.rating = request.json["rating"]
+    patched_cupcake.image = request.json["image"]
+
+    db.session.commit()
+
+    serialized_patched_cupcake = {
+        "id": patched_cupcake.id,
+        "flavor": patched_cupcake.flavor,
+        "size": patched_cupcake.size,
+        "rating": patched_cupcake.rating,
+        "image": patched_cupcake.image
+        }
+
+    return jsonify(response=serialized_patched_cupcake)

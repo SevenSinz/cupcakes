@@ -15,13 +15,13 @@ class Cupcake(db.Model):
                    autoincrement=True)
     # do we need size? String?
     flavor = db.Column(db.Text,
-                     nullable=False)
-    size = db.Column(db.Text, 
+                       nullable=False)
+    size = db.Column(db.Text,
                      nullable=False)
     rating = db.Column(db.Float,
-                     nullable=False)
-    image = db.Column(db.String(600), 
-                      default= "https://tinyurl.com/truffle-cupcake")
+                       nullable=False)
+    image = db.Column(db.String(600),
+                      default="https://tinyurl.com/truffle-cupcake")
 
 
 def connect_db(app):
