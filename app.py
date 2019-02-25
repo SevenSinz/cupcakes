@@ -104,3 +104,19 @@ def patch_cupcake(cupcake_id):
         }
 
     return jsonify(response=serialized_patched_cupcake)
+
+
+@app.route("/cupcakes/<int:cupcake_id>", methods=["DELETE"])
+def delete_cupcake(cupcake_id):
+    """ Handles cupcake patch for individual cupcake """
+
+    cupcake_to_delete = Cupcake.query.get(cupcake_id)
+    db.session.delete(cupcake_to_delete)
+
+    db.session.commit()
+
+    response = {
+        "message": "deleted"
+        }
+
+    return jsonify(response=response)
