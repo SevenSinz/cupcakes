@@ -8,15 +8,17 @@ $(function() {
         const img = $('#url').val()
         let response = await $.ajax({
             method: "POST",
-            url: `/cupcakes`,
+            url: `http://localhost:5000/cupcakes`,
             contentType: "application/json",
             data: JSON.stringify({
-                flavor,
-                size, 
-                rating, 
-                img
+                "flavor": flavor,
+                "size": size, 
+                "rating": rating, 
+                "image":img
             }),
           });
+
+          console.log(response)
         
     })
 })
