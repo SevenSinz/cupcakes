@@ -61,7 +61,7 @@ def create_cupcake():
     flavor = request.json["flavor"]
     size = request.json["size"]
     rating = request.json["rating"]
-    image = request.json["image"]
+    image = request.json["image"] or None
 
     new_cupcake = Cupcake(
         flavor=flavor,
@@ -82,28 +82,28 @@ def create_cupcake():
     return jsonify(response=serialized_new_cupcake)
 
 
-@app.route("/cupcakes/<int:cupcake_id>", methods=["GET", "PATCH"])
+@app.route("/cupcakes/<int:cupcake_id>", methods=["PATCH"])
 def patch_cupcake(cupcake_id):
     """ Handles cupcake patch for individual cupcake """
 
-    patched_cupcake = Cupcake.query.get(cupcake_id)
+    cupcake_to_patch = Cupcake.query.get(cupcake_id)
 
-    patched_cupcake.flavor = request.json["flavor"]
-    patched_cupcake.size = request.json["size"]
-    patched_cupcake.rating = request.json["rating"]
-    patched_cupcake.image = request.json["image"]
+    cupcake_to_patch.flavor = request.json["flavor"]
+    cupcake_to_patch.size = request.json["size"]
+    cupcake_to_patch.rating = request.json["rating"]
+    cupcake_to_patch.image = request.json["image"]
 
     db.session.commit()
 
-    serialized_patched_cupcake = {
-        "id": patched_cupcake.id,
-        "flavor": patched_cupcake.flavor,
-        "size": patched_cupcake.size,
-        "rating": patched_cupcake.rating,
-        "image": patched_cupcake.image
+    serialized_cupcake_to_patch = {
+        "id": cupcake_to_patch.id,
+        "flavor": cupcake_to_patch.flavor,
+        "size": cupcake_to_patch.size,
+        "rating": cupcake_to_patch.rating,
+        "image": cupcake_to_patch.image,
         }
 
-    return jsonify(response=serialized_patched_cupcake)
+    return jsonify(response=serialized_cupcake_to_patch)
 
 
 @app.route("/cupcakes/<int:cupcake_id>", methods=["DELETE"])
