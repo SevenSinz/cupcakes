@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+DEFAULT_CUPCAKE_IMG = "https://tinyurl.com/truffle-cupcake"
 
 class Cupcake(db.Model):
     """Cupcake."""
@@ -21,7 +22,7 @@ class Cupcake(db.Model):
     rating = db.Column(db.Float,
                        nullable=False)
     image = db.Column(db.String(600),
-                      default="https://tinyurl.com/truffle-cupcake")
+                      default=DEFAULT_CUPCAKE_IMG)
 
 
 def connect_db(app):

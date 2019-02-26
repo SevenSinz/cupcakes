@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, Cupcake
+from models import db, connect_db, Cupcake, DEFAULT_CUPCAKE_IMG
 
 app = Flask(__name__)
 
@@ -9,13 +9,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
 connect_db(app)
-db.create_all()
+# db.create_all()
 
 app.config['SECRET_KEY'] = "I'LL NEVER TELL!!"
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
 
+
+###################################### API ROUTES #################################
 
 @app.route("/cupcakes")
 def display_cupcakes():
@@ -61,7 +63,7 @@ def create_cupcake():
     flavor = request.json["flavor"]
     size = request.json["size"]
     rating = request.json["rating"]
-    image = request.json["image"] or None
+    image = request.json.get("image")
 
     new_cupcake = Cupcake(
         flavor=flavor,
@@ -91,7 +93,7 @@ def patch_cupcake(cupcake_id):
     cupcake_to_patch.flavor = request.json["flavor"]
     cupcake_to_patch.size = request.json["size"]
     cupcake_to_patch.rating = request.json["rating"]
-    cupcake_to_patch.image = request.json["image"]
+    cupcake_to_patch.image = request.json.get("image", DEFAULT_CUPCAKE_IMG)
 
     db.session.commit()
 

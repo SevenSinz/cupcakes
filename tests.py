@@ -1,5 +1,5 @@
 from app import app
-from models import db, connect_db, Cupcake
+from models import db, connect_db, Cupcake, DEFAULT_CUPCAKE_IMG
 import unittest
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes-app-test'
@@ -46,41 +46,50 @@ class AppTestCase(unittest.TestCase):
         """add new cupcake on /cupcakes """        
         response = self.client.post(
             "/cupcakes",
-            json={ 'flavor':'newFlavor', 
-                    'size':'sizable', 
-                    'rating':7, 
-                    'image':''
+            json={ 'flavor': 'newFlavor',
+                    'size': 'sizable',
+                    'rating': 7,
+                    'image': 'cupcake.com'
                   })
 
         self.assertEqual(response.json['response']['flavor'], 'newFlavor')
         self.assertEqual(response.json['response']['size'], 'sizable')
         self.assertEqual(response.json['response']['rating'], 7)
-        self.assertEqual(response.json['response']['image'], 'https://tinyurl.com/truffle-cupcake')
+        self.assertEqual(response.json['response']['image'], 'cupcake.com')
         self.assertEqual(response.status_code, 200)   
 
 
     def test_patch_cupcake(self):
         """/cupcakes/1000 patch cupcakeid=10000"""
+        # route is copied from the @app.route, 
+        # except id is updated to the testid
+        # below is json answer, copy from the body on insomnia
         response = self.client.patch(
-            # route is copied from the @app.route, except id is updated to the test id
             "/cupcakes/10000",
-            # json answer, copy from the body on insomnia
-            json={ 'flavor':'patching', 
-                    'size':'smallpatch', 
-                    'rating':6, 
-                    'image':'image.com'
+            json={'flavor': 'patching',
+                  'size': 'smallpatch',
+                  'rating': 6,
                   })
         # check and make sure your json[response] is accurate
-        self.assertEqual(response.json['response']['flavor'], 'patching')
-        self.assertEqual(response.json['response']['size'], 'smallpatch')
-        self.assertEqual(response.json['response']['rating'], 6)
-        self.assertEqual(response.json['response']['image'], 'image.com')
-        self.assertEqual(response.status_code, 200)   
 
+        self.assertEqual(response.json['response'], { 'id': 10000,
+                                                     'flavor': 'patching',
+                                                     'size': 'smallpatch',
+                                                     'rating': 6,
+                                                     'image': DEFAULT_CUPCAKE_IMG})
+
+        self.assertEqual(response.status_code, 200)
+        # below is replaced with above, cause python can compare dicts directly,
+        # and if a new argument is added to the {} test will fail, so we know to 
+        # # test for it
+        # self.assertEqual(response.json['response']['flavor'], 'patching')
+        # self.assertEqual(response.json['response']['size'], 'smallpatch')
+        # self.assertEqual(response.json['response']['rating'], 6)
+        # self.assertEqual(response.json['response']['image'], DEFAULT_CUPCAKE_IMG)
 
     def delete_cupcake(self):
         """/cupcakes/10000 delete cupcakeid=10000"""
         response = self.client.delete("/cupcakes/10000")
 
         self.assertEqual(response.json['response']['message'], 'deleted')
-        self.assertEqual(response.status_code, 200)       
+        self.assertEqual(response.status_code, 200)
