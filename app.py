@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Cupcake, DEFAULT_CUPCAKE_IMG
 
@@ -16,6 +16,13 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
 
+#################################### VIEW ROUTES #################################
+
+
+@app.route("/")
+def show_cupcakes():
+    cupcakes = Cupcake.query.all()
+    return render_template('index.html', cupcakes=cupcakes)
 
 ###################################### API ROUTES #################################
 

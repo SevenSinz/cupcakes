@@ -10,9 +10,15 @@
 <body>
     
     <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
     
+        {% for cupcake in cupcakes%}
+        <div>
+            Size: {{ cupcake.size }}
+            Rating: {{ cupcake.rating }}
+            Flavor: {{ cupcake.flavor }}
+            <img src="{{ cupcake.image }}" alt="Image is not working">
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
